@@ -14,3 +14,11 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/backup', function () {
+
+    \Illuminate\Support\Facades\Artisan::call('backup:run');
+
+    return 'Successful backup!';
+
+});
