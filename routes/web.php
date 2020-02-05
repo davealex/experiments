@@ -17,8 +17,18 @@ Route::get('/', function () {
 
 Route::get('/backup', function () {
 
-    \Illuminate\Support\Facades\Artisan::call('backup:run');
 
     return 'Successful backup!';
 
-});
+});    \Illuminate\Support\Facades\Artisan::call('backup:run');
+
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/users/list/all', 'UserListController@index');
+
+//Route::get('/users/list/all', function () {
+//    (new App\Http\Controllers\UserListController)->index();
+//});
