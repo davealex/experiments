@@ -17,10 +17,11 @@ Route::get('/', function () {
 
 Route::get('/backup', function () {
 
-
+    \Illuminate\Support\Facades\Artisan::call('backup:run');
+    
     return 'Successful backup!';
 
-});    \Illuminate\Support\Facades\Artisan::call('backup:run');
+});
 
 
 Auth::routes();
