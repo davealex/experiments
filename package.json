@@ -30,6 +30,7 @@
         "@uppy/xhr-upload": "^1.4.2",
         "crip-vue-loading": "^1.2.5",
         "noty": "^3.2.0-beta",
-        "vue-good-table": "^2.18.1"
+        "vue-good-table": "^2.18.1",
+        "vue-multiselect": "^2.1.6"
     }
 }

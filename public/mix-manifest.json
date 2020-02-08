@@ -1,5 +1,4 @@
 {
     "/js/app.js": "/js/app.js",
-    "/css/app.css": "/css/app.css",
-    "/js/plugins/uppy_uploader.js": "/js/plugins/uppy_uploader.js"
+    "/js/plugins/enrolment.js": "/js/plugins/enrolment.js"
 }
