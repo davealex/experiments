@@ -8,7 +8,7 @@
                 </span>
             </multiselect-courses>
             <div class="mt-3">
-                <button :disabled="selectedCourses.length === 0 || selectedUsers.length === 0" @click.prevent="assign" class="btn btn-primary btn-block mb-2">Assign</button>
+                <button :disabled="selectedCourses.length === 0 || selectedUsers.length === 0" @click="assign" class="btn btn-primary btn-block mb-2">Assign</button>
             </div>
         </div>
         <vue-good-table
@@ -20,7 +20,8 @@
             <template slot="table-row" slot-scope="props">
                 <span v-if="props.column.field === 'select'">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" v-model="selected[props.row.id]" @change="toggleCheck(props.row.id, selected[props.row.id])">
+                        <label :for="`checkbox-${props.row.id}`"></label>
+                      <input :id="`checkbox-${props.row.id}`" class="form-check-input" type="checkbox" v-model="selected[props.row.id]" @change="toggleCheck(props.row.id, selected[props.row.id])">
                     </div>
                 </span>
                 <span v-else-if="props.column.field === 'name'">
@@ -97,8 +98,19 @@
             toggleCheck: function (user, status) {
                 status ? this.selectedUsers.push(user) : this.selectedUsers.splice(this.selectedUsers.indexOf(user), 1);
             },
-            customLabel ({ title, code }) {
-                return `${title} – ${code}`
+            customLabel({ title, code }) {
+                return `${title} – ${code}`;
+            },
+            updateEnrolment({enrolled}) {
+                this.learners = this.learners.map(learner => enrolled.find(({id}) => id === learner.id) || learner);
+
+                return this;
+            },
+            clearSelected() {
+                this.selectedCourses = [];
+                this.selected = [];
+
+                return this;
             },
             assign() {
                 axios.post('/enrol', {
@@ -106,16 +118,14 @@
                     users: this.selectedUsers
                 })
                 .then(({ data }) => {
-                    this.learners = data.users;
-                    this.notify('success', 'Enrolment Successful!');
-                    this.selectedCourses = [];
-                    this.selected = [];
+                    this.updateEnrolment(data)
+                        .clearSelected()
+                        .notify('success', 'Enrolment Successful!');
                 })
                 .catch(err => {
                     console.error(err);
                 });
             }
-
         }
     };
 </script>

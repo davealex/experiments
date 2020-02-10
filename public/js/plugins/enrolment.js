@@ -1959,6 +1959,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 
@@ -2007,23 +2008,34 @@ __webpack_require__.r(__webpack_exports__);
           code = _ref.code;
       return "".concat(title, " \u2013 ").concat(code);
     },
+    updateEnrolment: function updateEnrolment(_ref2) {
+      var enrolled = _ref2.enrolled;
+      this.learners = this.learners.map(function (learner) {
+        return enrolled.find(function (_ref3) {
+          var id = _ref3.id;
+          return id === learner.id;
+        }) || learner;
+      });
+      return this;
+    },
+    clearSelected: function clearSelected() {
+      this.selectedCourses = [];
+      this.selected = [];
+      return this;
+    },
     assign: function assign() {
       var _this = this;
 
       axios.post('/enrol', {
-        courses: this.selectedCourses.map(function (_ref2) {
-          var id = _ref2.id;
+        courses: this.selectedCourses.map(function (_ref4) {
+          var id = _ref4.id;
           return id;
         }),
         users: this.selectedUsers
-      }).then(function (_ref3) {
-        var data = _ref3.data;
-        _this.learners = data.users;
+      }).then(function (_ref5) {
+        var data = _ref5.data;
 
-        _this.notify('success', 'Enrolment Successful!');
-
-        _this.selectedCourses = [];
-        _this.selected = [];
+        _this.updateEnrolment(data).clearSelected().notify('success', 'Enrolment Successful!');
       })["catch"](function (err) {
         console.error(err);
       });
@@ -21250,12 +21262,7 @@ var render = function() {
                     _vm.selectedCourses.length === 0 ||
                     _vm.selectedUsers.length === 0
                 },
-                on: {
-                  click: function($event) {
-                    $event.preventDefault()
-                    return _vm.assign($event)
-                  }
-                }
+                on: { click: _vm.assign }
               },
               [_vm._v("Assign")]
             )
@@ -21280,6 +21287,10 @@ var render = function() {
                 props.column.field === "select"
                   ? _c("span", [
                       _c("div", { staticClass: "form-check" }, [
+                        _c("label", {
+                          attrs: { for: "checkbox-" + props.row.id }
+                        }),
+                        _vm._v(" "),
                         _c("input", {
                           directives: [
                             {
@@ -21290,7 +21301,10 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-check-input",
-                          attrs: { type: "checkbox" },
+                          attrs: {
+                            id: "checkbox-" + props.row.id,
+                            type: "checkbox"
+                          },
                           domProps: {
                             checked: Array.isArray(_vm.selected[props.row.id])
                               ? _vm._i(_vm.selected[props.row.id], null) > -1

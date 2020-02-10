@@ -17,12 +17,12 @@ class CourseController extends Controller
         ]);
     }
 
-    public function register(Request $request)
+    public function enrol(Request $request)
     {
         Course::registerCourses($request->courses, $request->users);
 
         return response([
-            'users' => User::all()
+            'enrolled' => User::find($request->users)
         ], 200);
     }
 }

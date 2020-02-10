@@ -43,8 +43,8 @@ Route::post('/file/upload', 'PostController@upload');
 
 Route::post('/store', 'PostController@store');
 
-// multi assign models
-Route::get('/enrolment', 'CourseController@enrolment');
+// enrolment multi assign models
+Route::get('/enrolment/processing', 'CourseController@enrolment');
 
-Route::post('/enrol', 'CourseController@register');
+Route::post('/enrol', 'CourseController@enrol');
 
