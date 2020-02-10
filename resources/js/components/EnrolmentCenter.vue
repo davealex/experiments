@@ -112,9 +112,12 @@
 
                 return this;
             },
+            courseIds() {
+                return this.selectedCourses.map(({ id }) => id);
+            },
             assign() {
                 axios.post('/enrol', {
-                    courses: this.selectedCourses.map(({ id }) => id),
+                    courses: this.courseIds(),
                     users: this.selectedUsers
                 })
                 .then(({ data }) => {

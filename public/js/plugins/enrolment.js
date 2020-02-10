@@ -2023,14 +2023,17 @@ __webpack_require__.r(__webpack_exports__);
       this.selected = [];
       return this;
     },
+    courseIds: function courseIds() {
+      return this.selectedCourses.map(function (_ref4) {
+        var id = _ref4.id;
+        return id;
+      });
+    },
     assign: function assign() {
       var _this = this;
 
       axios.post('/enrol', {
-        courses: this.selectedCourses.map(function (_ref4) {
-          var id = _ref4.id;
-          return id;
-        }),
+        courses: this.courseIds(),
         users: this.selectedUsers
       }).then(function (_ref5) {
         var data = _ref5.data;
