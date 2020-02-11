@@ -21,7 +21,7 @@
                 <span v-if="props.column.field === 'select'">
                     <div class="form-check">
                         <label :for="`checkbox-${props.row.id}`"></label>
-                      <input :id="`checkbox-${props.row.id}`" class="form-check-input" type="checkbox" v-model="selected[props.row.id]" @change="toggleCheck(props.row.id, selected[props.row.id])">
+                        <input :id="`checkbox-${props.row.id}`" class="form-check-input" type="checkbox" v-model="selected[props.row.id]" @change="toggleCheck(props.row.id, selected[props.row.id])">
                     </div>
                 </span>
                 <span v-else-if="props.column.field === 'name'">
