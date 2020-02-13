@@ -8,7 +8,7 @@
                 </span>
             </multiselect-courses>
             <div class="mt-3">
-                <button :disabled="selectedCourses.length === 0 || selectedUsers.length === 0" @click="assign" class="btn btn-primary btn-block mb-2">Assign</button>
+                <button :disabled="disableButton" @click="assign" class="btn btn-primary btn-block mb-2">Assign</button>
             </div>
         </div>
         <vue-good-table
@@ -92,6 +92,9 @@
         computed: {
             options: function() {
                 return this.courses;
+            },
+            disableButton: function() {
+                return this.selectedCourses.length === 0 || this.selectedUsers.length === 0;
             }
         },
         methods: {
@@ -116,18 +119,20 @@
                 return this.selectedCourses.map(({ id }) => id);
             },
             assign() {
-                axios.post('/enrol', {
-                    courses: this.courseIds(),
-                    users: this.selectedUsers
-                })
-                .then(({ data }) => {
-                    this.updateEnrolment(data)
-                        .clearSelected()
-                        .notify('success', 'Enrolment Successful!');
-                })
-                .catch(err => {
-                    console.error(err);
-                });
+                if(!this.disableButton) {
+                    axios.post('/enrol', {
+                        courses: this.courseIds(),
+                        users: this.selectedUsers
+                    })
+                        .then(({ data }) => {
+                            this.updateEnrolment(data)
+                                .clearSelected()
+                                .notify('success', 'Enrolment Successful!');
+                        })
+                        .catch(err => {
+                            console.error(err);
+                        });
+                } else this.notify('warning', 'Please make your selections before proceeding');
             }
         }
     };

@@ -1997,6 +1997,9 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     options: function options() {
       return this.courses;
+    },
+    disableButton: function disableButton() {
+      return this.selectedCourses.length === 0 || this.selectedUsers.length === 0;
     }
   },
   methods: {
@@ -2032,16 +2035,18 @@ __webpack_require__.r(__webpack_exports__);
     assign: function assign() {
       var _this = this;
 
-      axios.post('/enrol', {
-        courses: this.courseIds(),
-        users: this.selectedUsers
-      }).then(function (_ref5) {
-        var data = _ref5.data;
+      if (!this.disableButton) {
+        axios.post('/enrol', {
+          courses: this.courseIds(),
+          users: this.selectedUsers
+        }).then(function (_ref5) {
+          var data = _ref5.data;
 
-        _this.updateEnrolment(data).clearSelected().notify('success', 'Enrolment Successful!');
-      })["catch"](function (err) {
-        console.error(err);
-      });
+          _this.updateEnrolment(data).clearSelected().notify('success', 'Enrolment Successful!');
+        })["catch"](function (err) {
+          console.error(err);
+        });
+      } else this.notify('warning', 'Please make your selections before proceeding');
     }
   }
 });
@@ -21260,11 +21265,7 @@ var render = function() {
               "button",
               {
                 staticClass: "btn btn-primary btn-block mb-2",
-                attrs: {
-                  disabled:
-                    _vm.selectedCourses.length === 0 ||
-                    _vm.selectedUsers.length === 0
-                },
+                attrs: { disabled: _vm.disableButton },
                 on: { click: _vm.assign }
               },
               [_vm._v("Assign")]
