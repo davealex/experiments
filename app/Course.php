@@ -13,7 +13,7 @@ class Course extends Model
         return $this->belongsToMany(User::class);
     }
 
-    public static function registerCourses($courses, $users)
+    public static function registerLearners($courses, $users)
     {
         static::find($courses)->each(function ($course) use ($users) {
             $course->users()->syncWithoutDetaching($users);

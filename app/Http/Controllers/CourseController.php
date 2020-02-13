@@ -19,7 +19,7 @@ class CourseController extends Controller
 
     public function enrol(Request $request)
     {
-        Course::registerCourses($request->courses, $request->users);
+        Course::registerLearners($request->courses, $request->users);
 
         return response([
             'enrolled' => User::find($request->users)
