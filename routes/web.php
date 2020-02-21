@@ -48,3 +48,8 @@ Route::get('/enrolment/processing', 'CourseController@enrolment');
 
 Route::post('/enrol', 'CourseController@enrol');
 
+// confirm delete feature
+Route::get('/users/profiles', 'ProfileController@index');
+
+Route::delete('/profiles/{user}/delete', 'ProfileController@destroy');
+
