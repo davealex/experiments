@@ -33,13 +33,11 @@
             }
         },
         mounted() {
-            this.$nextTick(() => {
-                this.$root.$on(this.listeningFor, ({data}) => {
-                    this.updateModel(data)
-                        .openConfirmDialogModal();
+            this.$root.$on(this.listeningFor, ({data}) => {
+                this.updateModel(data)
+                    .openConfirmDialogModal();
 
-                    this.disabled = false;
-                })
+                this.disabled = false;
             })
         },
         mixins: [notify],

@@ -157,14 +157,12 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this = this;
 
-    this.$nextTick(function () {
-      _this.$root.$on(_this.listeningFor, function (_ref) {
-        var data = _ref.data;
+    this.$root.$on(this.listeningFor, function (_ref) {
+      var data = _ref.data;
 
-        _this.updateModel(data).openConfirmDialogModal();
+      _this.updateModel(data).openConfirmDialogModal();
 
-        _this.disabled = false;
-      });
+      _this.disabled = false;
     });
   },
   mixins: [_mixins_noty__WEBPACK_IMPORTED_MODULE_0__["default"]],
@@ -281,12 +279,10 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this = this;
 
-    this.$nextTick(function () {
-      _this.$root.$on('profile-delete-successful', function (_ref) {
-        var model = _ref.model;
+    this.$root.$on('profile-delete-successful', function (_ref) {
+      var model = _ref.model;
 
-        _this.removeDeletedProfile(model);
-      });
+      _this.removeDeletedProfile(model);
     });
   },
   methods: {

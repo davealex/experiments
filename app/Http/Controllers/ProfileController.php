@@ -8,12 +8,11 @@ class ProfileController extends Controller
 {
     public function index()
     {
-        // temporarily all()
-//        if (request()->expectsJson()) {
-//            return response([
-//                'profiles' => User::all()
-//            ], 200);
-//        }
+        if (request()->expectsJson()) {
+            return response([
+                'profiles' => User::all()
+            ], 200);
+        }
 
         return view('profiles', ['profiles' => User::all()]);
     }
@@ -28,8 +27,8 @@ class ProfileController extends Controller
             ], 200);
         }
 
-//        return view('profiles', [
-//            'message' => $user->name . "'s profile has been deleted."
-//        ]);
+        return view('profiles', [
+            'message' => $user->name . "'s profile has been deleted."
+        ]);
     }
 }
