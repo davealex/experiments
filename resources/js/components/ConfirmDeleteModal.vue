@@ -56,7 +56,7 @@
                     axios.delete(`${this.deletionUrlPrefix}/${this.model.id}/delete`)
                         .then(({ data }) => {
                             this.closeConfirmDialogModal()
-                                .broadcastProfileDeletion()
+                                .broadcastModelDeletion()
                                 .clearModelProp()
                                 .notify('success', data.message)
                             ;
@@ -66,9 +66,9 @@
 
                             this.disabled = false;
                         });
-                } else this.notify('warning', 'Please select a profile first.');
+                } else this.notify('warning', 'Please select a model first.');
             },
-            broadcastProfileDeletion() {
+            broadcastModelDeletion() {
                 this.$root.$emit(this.deleteCompletionEvent, {model: this.model});
 
                 return this;

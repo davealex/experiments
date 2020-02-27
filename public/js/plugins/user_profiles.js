@@ -182,14 +182,14 @@ __webpack_require__.r(__webpack_exports__);
         axios["delete"]("".concat(this.deletionUrlPrefix, "/").concat(this.model.id, "/delete")).then(function (_ref2) {
           var data = _ref2.data;
 
-          _this2.closeConfirmDialogModal().broadcastProfileDeletion().clearModelProp().notify('success', data.message);
+          _this2.closeConfirmDialogModal().broadcastModelDeletion().clearModelProp().notify('success', data.message);
         })["catch"](function (err) {
           console.error(err);
           _this2.disabled = false;
         });
-      } else this.notify('warning', 'Please select a profile first.');
+      } else this.notify('warning', 'Please select a model first.');
     },
-    broadcastProfileDeletion: function broadcastProfileDeletion() {
+    broadcastModelDeletion: function broadcastModelDeletion() {
       this.$root.$emit(this.deleteCompletionEvent, {
         model: this.model
       });

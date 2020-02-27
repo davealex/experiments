@@ -9,8 +9,8 @@
                         <p class="card-text">{{ user.email }}</p>
 
                         <confirm-delete-button
-                                event-call="profile-delete-called"
-                                :payload="{data: user}">
+                             event-call="profile-delete-called"
+                             :payload="{data: user}">
                             <template v-slot:button>
                                 <span class="btn btn-danger">Delete profile</span>
                             </template>
@@ -20,9 +20,9 @@
             </div>
 
             <confirm-delete-modal
-                    listening-for="profile-delete-called"
-                    deletion-url-prefix="/profiles"
-                    delete-completion-event="profile-delete-successful">
+                listening-for="profile-delete-called"
+                deletion-url-prefix="/profiles"
+                delete-completion-event="profile-delete-successful">
                 <template v-slot:warning-message="{ model }">
                     Are you sure you want to delete <strong>{{ model.name }}</strong>'s profile?
                 </template>
