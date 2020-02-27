@@ -7,11 +7,7 @@
             <div class="card">
                 <div class="card-body">
                     <uppy-uploader
-                        form-id="form-id"
-                        input-id="input-id"
-                        csrf-ref="csrf-token"
-                        :max-size="1000000"
-                    >
+                        :max-file-size-in-bytes="1000000">
                         <template v-slot:info>
                             Drop files here or click to upload.
                         </template>

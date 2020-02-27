@@ -11610,13 +11610,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _uppy_dashboard__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_uppy_dashboard__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _uppy_form__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @uppy/form */ "./node_modules/@uppy/form/lib/index.js");
 /* harmony import */ var _uppy_form__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_uppy_form__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _mixins_noty__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./mixins/noty */ "./resources/js/components/mixins/noty.js");
-/* harmony import */ var _uppy_core_dist_style_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @uppy/core/dist/style.css */ "./node_modules/@uppy/core/dist/style.css");
-/* harmony import */ var _uppy_core_dist_style_css__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_uppy_core_dist_style_css__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _uppy_dashboard_dist_style_css__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @uppy/dashboard/dist/style.css */ "./node_modules/@uppy/dashboard/dist/style.css");
-/* harmony import */ var _uppy_dashboard_dist_style_css__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_uppy_dashboard_dist_style_css__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _mixins_noty__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./mixins/noty */ "./resources/js/components/mixins/noty.js");
+/* harmony import */ var _uppy_core_dist_style_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @uppy/core/dist/style.css */ "./node_modules/@uppy/core/dist/style.css");
+/* harmony import */ var _uppy_core_dist_style_css__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_uppy_core_dist_style_css__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _uppy_dashboard_dist_style_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @uppy/dashboard/dist/style.css */ "./node_modules/@uppy/dashboard/dist/style.css");
+/* harmony import */ var _uppy_dashboard_dist_style_css__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_uppy_dashboard_dist_style_css__WEBPACK_IMPORTED_MODULE_6__);
 //
 //
 //
@@ -11639,7 +11637,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
 
 
 
@@ -11649,53 +11646,44 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
-    formId: {
-      type: String,
-      required: true
-    },
-    inputId: {
-      type: String,
-      required: true
-    },
-    csrfRef: {
-      type: String,
-      required: true
-    },
-    maxSize: {
+    maxFileSizeInBytes: {
       type: Number,
       required: true
     }
   },
-  mixins: [_mixins_noty__WEBPACK_IMPORTED_MODULE_5__["default"]],
+  mixins: [_mixins_noty__WEBPACK_IMPORTED_MODULE_4__["default"]],
   data: function data() {
     return {
       payload: null,
-      path: null,
-      disabled: false
+      previewPath: null,
+      disabled: true
     };
   },
   mounted: function mounted() {
-    var _this = this;
+    this.instantiateUppy();
+  },
+  methods: {
+    instantiateUppy: function instantiateUppy() {
+      var _this = this;
 
-    this.$nextTick(function () {
-      _this.uppy = _uppy_core__WEBPACK_IMPORTED_MODULE_0___default()({
+      this.uppy = _uppy_core__WEBPACK_IMPORTED_MODULE_0___default()({
         debug: true,
         autoProceed: true,
         restrictions: {
-          maxFileSize: _this.maxSize,
+          maxFileSize: this.maxFileSizeInBytes,
           minNumberOfFiles: 1,
           maxNumberOfFiles: 1,
           allowedFileTypes: ['image/*', 'video/*', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/pdf']
         }
       }).use(_uppy_dashboard__WEBPACK_IMPORTED_MODULE_2___default.a, {
-        trigger: '.UppyModalOpenerBtn',
+        trigger: this.$refs.uppyModalOpenerBtn,
         hideUploadButton: true,
         inline: true,
         height: 450,
-        target: '.DashboardContainer',
+        target: this.$refs.dashboardContainer,
         replaceTargetContent: true,
         showProgressDetails: true,
-        note: '1 file only (up to 1 MB)',
+        //                        note: `1 file only, up to ${Math.round(this.maxFileSizeInBytes / 1000000)} MB`,
         browserBackButtonClose: true
       }).use(_uppy_xhr_upload__WEBPACK_IMPORTED_MODULE_1___default.a, {
         limit: 10,
@@ -11703,39 +11691,44 @@ __webpack_require__.r(__webpack_exports__);
         formData: true,
         fieldName: 'file',
         headers: {
-          'X-CSRF-TOKEN': document.querySelector("meta[name=\"".concat(_this.csrfRef, "\"]")).getAttribute('content')
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // from <meta name="csrf-token" content="{{ csrf_token() }}">
+
         }
       });
-
-      _this.uppy.on('complete', function (event) {
+      this.uppy.on('complete', function (event) {
         if (event.successful[0] !== undefined) {
           _this.payload = event.successful[0].response.body.path;
+          _this.disabled = false;
         }
       });
-    });
-  },
-  methods: {
+    },
+    updatePreviewPath: function updatePreviewPath(_ref) {
+      var path = _ref.path;
+      this.previewPath = path;
+      return this;
+    },
+    resetUploader: function resetUploader() {
+      this.uppy.reset();
+      this.disabled = true;
+      return this;
+    },
     confirmUpload: function confirmUpload() {
       var _this2 = this;
 
-      if (this.payload !== null) {
+      if (this.payload) {
         this.disabled = true;
-        axios__WEBPACK_IMPORTED_MODULE_4___default.a.post('/store', {
+        axios.post('/store', {
           file: this.payload
-        }).then(function (_ref) {
-          var data = _ref.data;
-          _this2.path = data.path;
+        }).then(function (_ref2) {
+          var data = _ref2.data;
 
-          _this2.notify('success', 'Upload Successful!');
+          _this2.updatePreviewPath(data).resetUploader().notify('success', 'Upload Successful!');
+        })["catch"](function (err) {
+          console.error(err);
 
-          _this2.uppy.reset();
-
-          _this2.disabled = false;
-        })["catch"](function (response) {
-          console.error(response.toJSON());
-          _this2.disabled = false;
+          _this2.resetUploader();
         });
-      }
+      } else Object(_mixins_noty__WEBPACK_IMPORTED_MODULE_4__["default"])('warning', "You don't have any file in processing");
     }
   }
 });
@@ -20092,16 +20085,18 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("form", { attrs: { id: _vm.formId } }, [
-    _vm.path !== null
+  return _c("form", [
+    _vm.previewPath
       ? _c("div", { staticClass: "image-container mb-3" }, [
-          _c("img", { attrs: { src: _vm.path, alt: "Uploaded Image" } })
+          _c("img", {
+            attrs: { src: _vm.previewPath, alt: "Uploaded Image Preview" }
+          })
         ])
       : _vm._e(),
     _vm._v(" "),
     _c("div", { staticClass: "form-group" }, [
-      _c("div", { staticClass: "DashboardContainer" }, [
-        _c("div", { staticClass: "UppyModalOpenerBtn" }, [
+      _c("div", { ref: "dashboardContainer" }, [
+        _c("div", { ref: "uppyModalOpenerBtn" }, [
           _c("i", {
             staticClass: "fa fa-file-o fa-5x",
             attrs: { "aria-hidden": "true" }

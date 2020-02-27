@@ -1,11 +1,11 @@
 <template>
-    <form :id="formId">
-        <div class="image-container mb-3" v-if="path !== null">
-            <img :src="path" alt="Uploaded Image">
+    <form>
+        <div class="image-container mb-3" v-if="previewPath">
+            <img :src="previewPath" alt="Uploaded Image Preview">
         </div>
         <div class="form-group">
-            <div class="DashboardContainer">
-                <div class="UppyModalOpenerBtn">
+            <div ref="dashboardContainer">
+                <div ref="uppyModalOpenerBtn">
                     <i class="fa fa-file-o fa-5x" aria-hidden="true"></i>
                     <div class="dz-message needsclick">
                         <span class="dz-message-header">
@@ -25,7 +25,7 @@
     import XHRUpload from '@uppy/xhr-upload';
     import Dashboard from '@uppy/dashboard';
     import Form from '@uppy/form';
-    import axios from 'axios';
+
     import notify from './mixins/noty';
 
     import '@uppy/core/dist/style.css';
@@ -33,19 +33,7 @@
 
     export default {
         props: {
-            formId: {
-                type: String,
-                required: true
-            },
-            inputId: {
-                type: String,
-                required: true
-            },
-            csrfRef: {
-                type: String,
-                required: true
-            },
-            maxSize: {
+            maxFileSizeInBytes: {
                 type: Number,
                 required: true
             }
@@ -54,68 +42,82 @@
         data() {
             return {
                 payload: null,
-                path: null,
-                disabled: false
+                previewPath: null,
+                disabled: true
             }
         },
         mounted() {
-            this.$nextTick(() => {
+            this.instantiateUppy()
+        },
+        methods: {
+            instantiateUppy() {
                 this.uppy = Uppy({
                     debug: true,
                     autoProceed: true,
                     restrictions: {
-                        maxFileSize: this.maxSize,
+                        maxFileSize: this.maxFileSizeInBytes,
                         minNumberOfFiles: 1,
                         maxNumberOfFiles: 1,
                         allowedFileTypes: ['image/*', 'video/*', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/pdf']
                     }
                 })
-                .use(Dashboard, {
-                    trigger: '.UppyModalOpenerBtn',
-                    hideUploadButton: true,
-                    inline: true,
-                    height: 450,
-                    target: '.DashboardContainer',
-                    replaceTargetContent: true,
-                    showProgressDetails: true,
-                    note: '1 file only (up to 1 MB)',
-                    browserBackButtonClose: true
+                    .use(Dashboard, {
+                        trigger: this.$refs.uppyModalOpenerBtn,
+                        hideUploadButton: true,
+                        inline: true,
+                        height: 450,
+                        target: this.$refs.dashboardContainer,
+                        replaceTargetContent: true,
+                        showProgressDetails: true,
+//                        note: `1 file only, up to ${Math.round(this.maxFileSizeInBytes / 1000000)} MB`,
+                        browserBackButtonClose: true
 
-                })
-                .use(XHRUpload, {
-                    limit: 10,
-                    endpoint: '/file/upload',
-                    formData: true,
-                    fieldName: 'file',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector(`meta[name="${this.csrfRef}"]`).getAttribute('content')
-                    }
-                });
+                    })
+                    .use(XHRUpload, {
+                        limit: 10,
+                        endpoint: '/file/upload',
+                        formData: true,
+                        fieldName: 'file',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // from <meta name="csrf-token" content="{{ csrf_token() }}">
+                        }
+                    });
 
                 this.uppy.on('complete', (event) => {
                     if(event.successful[0] !== undefined) {
                         this.payload = event.successful[0].response.body.path;
+
+                        this.disabled = false;
                     }
                 });
-            });
-        },
-        methods: {
+            },
+            updatePreviewPath({path}) {
+                this.previewPath = path;
+
+                return this;
+            },
+            resetUploader() {
+                this.uppy.reset();
+                this.disabled = true;
+
+                return this;
+            },
             confirmUpload() {
-                if(this.payload !== null) {
+                if(this.payload) {
                     this.disabled = true;
                     axios.post('/store', { file: this.payload })
-                        .then(({data}) => {
-                            this.path = data.path;
-                            this.notify('success', 'Upload Successful!');
-                            this.uppy.reset();
-                            this.disabled = false;
+                        .then(({ data }) => {
+                            this.updatePreviewPath(data)
+                                .resetUploader()
+                                .notify('success', 'Upload Successful!');
                         })
-                        .catch(response => {
-                            console.error(response.toJSON());
-                            this.disabled = false;
+                        .catch(err => {
+                            console.error(err);
+
+                            this.resetUploader();
                         })
                     ;
-                }
+                } else notify('warning', `You don't have any file in processing`);
 
             }
         }
