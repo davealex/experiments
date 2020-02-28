@@ -2,37 +2,15 @@
 
 namespace App\Traits;
 
-use App\Services\NewPathGenerator;
+use App\Services\FileUploadProcessor;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 trait UppyUploaderTrait
 {
-
-    public function upload(Request $request)
+    public function upload(Request $request, FileUploadProcessor $fileUploadProcessor)
     {
-
         return response([
-            'path' => $this->generateTempFilePath($request)
+            'path' => $fileUploadProcessor->generateTempFileStoragePath($request)
         ], 200);
-
-    }
-
-    public function generateTempFilePath(Request $request)
-    {
-
-        return $request->file('file')->store('/uploads/temp', 'public');
-
-    }
-
-    public function moveFileToPath($tempPath)
-    {
-
-        $newPath = NewPathGenerator::path($tempPath);
-
-        Storage::disk('public')->move($tempPath, $newPath);
-
-        return $newPath;
-
     }
 }
