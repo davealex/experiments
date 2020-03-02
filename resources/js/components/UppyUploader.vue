@@ -4,17 +4,7 @@
             <img :src="previewPath" alt="Uploaded Image Preview">
         </div>
         <div class="form-group">
-            <div ref="dashboardContainer">
-                <div ref="uppyModalOpenerBtn">
-                    <i class="fa fa-file-o fa-5x" aria-hidden="true"></i>
-                    <div class="dz-message needsclick">
-                        <span class="dz-message-header">
-                            <slot name="info"></slot>
-                        </span>
-                        <span class="dz-message-description">(Selected files are <strong>uploaded</strong> automatically.)</span>
-                    </div>
-                </div>
-            </div>
+            <div ref="dashboardContainer"></div>
         </div>
         <button :disabled="disabled" @click.prevent="confirmUpload" class="btn btn-primary btn-block mb-2">Confirm upload</button>
     </form>
@@ -62,14 +52,12 @@
                     }
                 })
                     .use(Dashboard, {
-                        trigger: this.$refs.uppyModalOpenerBtn,
                         hideUploadButton: true,
                         inline: true,
                         height: 450,
                         target: this.$refs.dashboardContainer,
                         replaceTargetContent: true,
                         showProgressDetails: true,
-//                        note: `1 file only, up to ${Math.round(this.maxFileSizeInBytes / 1000000)} MB`,
                         browserBackButtonClose: true
 
                     })

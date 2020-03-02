@@ -7,10 +7,22 @@ use Illuminate\Http\Request;
 
 trait UppyUploaderTrait
 {
-    public function upload(Request $request, FileUploadProcessor $fileUploadProcessor)
+    protected $fileUploadProcessor;
+
+    public function __construct(FileUploadProcessor $fileUploadProcessor)
+    {
+        $this->fileUploadProcessor = $fileUploadProcessor;
+    }
+
+    public function upload(Request $request)
     {
         return response([
-            'path' => $fileUploadProcessor->generateTempFileStoragePath($request)
+            'path' => $this->fileUploadProcessor->generateTempFileStoragePath($request)
         ], 200);
+    }
+
+    public function getMovedFilePath($file)
+    {
+        return $this->fileUploadProcessor->moveFileToRealStoragePath($file);
     }
 }

@@ -11627,16 +11627,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -11676,14 +11666,12 @@ __webpack_require__.r(__webpack_exports__);
           allowedFileTypes: ['image/*', 'video/*', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/pdf']
         }
       }).use(_uppy_dashboard__WEBPACK_IMPORTED_MODULE_2___default.a, {
-        trigger: this.$refs.uppyModalOpenerBtn,
         hideUploadButton: true,
         inline: true,
         height: 450,
         target: this.$refs.dashboardContainer,
         replaceTargetContent: true,
         showProgressDetails: true,
-        //                        note: `1 file only, up to ${Math.round(this.maxFileSizeInBytes / 1000000)} MB`,
         browserBackButtonClose: true
       }).use(_uppy_xhr_upload__WEBPACK_IMPORTED_MODULE_1___default.a, {
         limit: 10,
@@ -20095,25 +20083,7 @@ var render = function() {
       : _vm._e(),
     _vm._v(" "),
     _c("div", { staticClass: "form-group" }, [
-      _c("div", { ref: "dashboardContainer" }, [
-        _c("div", { ref: "uppyModalOpenerBtn" }, [
-          _c("i", {
-            staticClass: "fa fa-file-o fa-5x",
-            attrs: { "aria-hidden": "true" }
-          }),
-          _vm._v(" "),
-          _c("div", { staticClass: "dz-message needsclick" }, [
-            _c(
-              "span",
-              { staticClass: "dz-message-header" },
-              [_vm._t("info")],
-              2
-            ),
-            _vm._v(" "),
-            _vm._m(0)
-          ])
-        ])
-      ])
+      _c("div", { ref: "dashboardContainer" })
     ]),
     _vm._v(" "),
     _c(
@@ -20132,18 +20102,7 @@ var render = function() {
     )
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("span", { staticClass: "dz-message-description" }, [
-      _vm._v("(Selected files are "),
-      _c("strong", [_vm._v("uploaded")]),
-      _vm._v(" automatically.)")
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 

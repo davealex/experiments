@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Post;
-use App\Services\FileUploadProcessor;
 use App\Traits\UppyUploaderTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -12,10 +11,10 @@ class PostController extends Controller
 {
     use UppyUploaderTrait;
 
-    public function store(Request $request, FileUploadProcessor $fileUploadProcessor)
+    public function store(Request $request)
     {
         if ($request->file) {
-            $post = Post::publishNewPost($fileUploadProcessor->moveFileToRealStoragePath($request->file));
+            $post = Post::publishNewPost($this->getMovedFilePath($request->file));
 
             return response([
                 'path' => Storage::url($post->file_path)
