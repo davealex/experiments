@@ -1,7 +1,9 @@
 <template>
     <form :id="formId">
-        <div class="image-container mb-3" v-if="path !== null">
-            <img :src="path" alt="Uploaded Image">
+        <div class="mb-3 d-flex" v-if="paths.length !== 0">
+            <div class="image-container" v-for="(path, index) in paths" :key="index">
+                <img :src="path" :alt="`Uploaded Image-${index}`">
+            </div>
         </div>
         <div class="form-group">
             <div class="DashboardContainer">
@@ -53,8 +55,8 @@
         mixins: [notify],
         data() {
             return {
-                payload: null,
-                path: null,
+                payload: [],
+                paths: [],
                 disabled: false
             }
         },
@@ -66,7 +68,7 @@
                     restrictions: {
                         maxFileSize: this.maxSize,
                         minNumberOfFiles: 1,
-                        maxNumberOfFiles: 1,
+                        maxNumberOfFiles: 3,
                         allowedFileTypes: ['image/*', 'video/*', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/pdf']
                     }
                 })
@@ -93,28 +95,37 @@
                 });
 
                 this.uppy.on('complete', (event) => {
-                    if(event.successful[0] !== undefined) {
-                        this.payload = event.successful[0].response.body.path;
+                    console.log(event.successful);
+                    if(event.successful.length !== 0) {
+                        event.successful.forEach(this.addPayload);
                     }
+                    console.log(JSON.stringify(this.payload));
                 });
             });
         },
         methods: {
+            addPayload(item, index, array) {
+                array[index] !== undefined && this.payload.push(item.response.body.path);
+            },
             confirmUpload() {
-                if(this.payload !== null) {
+                if(this.payload.length !== 0) {
                     this.disabled = true;
-                    axios.post('/store', { file: this.payload })
+                    axios.post('/store', { files: JSON.stringify(this.payload) })
                         .then(({data}) => {
-                            this.path = data.path;
+                            console.log(data.paths);
+                            this.paths = data.paths;
                             this.notify('success', 'Upload Successful!');
                             this.uppy.reset();
                             this.disabled = false;
+                            this.payload = [];
                         })
                         .catch(response => {
                             console.error(response.toJSON());
                             this.disabled = false;
                         })
                     ;
+                } else {
+                    this.notify('error', 'Opops...No Uploaded file(s)');
                 }
 
             }
@@ -128,8 +139,7 @@
         width: 150px;
         border-radius: 50%;
         overflow: hidden;
-        margin-right: auto;
-        margin-left: auto;
+        padding: 5px;
     }
 
     .image-container > img {
