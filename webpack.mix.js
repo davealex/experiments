@@ -11,7 +11,8 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
+mix
+    // .js('resources/js/app.js', 'public/js')
     // .js('resources/js/plugins/users_datatable.js', 'public/js/plugins')
     .js('resources/js/plugins/uppy_uploader.js', 'public/js/plugins')
     // .js('resources/js/plugins/enrolment.js', 'public/js/plugins')
